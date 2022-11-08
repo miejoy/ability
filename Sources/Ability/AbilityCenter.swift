@@ -37,16 +37,20 @@ public class AbilityCenter {
         if isLoaded {
             return
         }
-        isLoaded = true
         
         // 调用能力加载方法
         loadAbilities()
         
         // 注册方法列表
         registeFuncs(config.funcs)
+        
+        // 移除方法
+        removeFuncs(config.removeFuncs)
                 
         // 调用加载完成方法
         config.onLoadCallBack?()
+        
+        isLoaded = true
     }
 }
 
@@ -67,7 +71,7 @@ extension AbilityCenter {
                 AbilityMonitor.shared.record(event: .duplicateRegisteAbility(existAbility, ability))
             }
             AbilityMonitor.shared.record(event: .registeAbility(ability))
-            storage[abilityName.identifier] = ability;
+            storage[abilityName.identifier] = ability
             useAbilitiyNames.insert(abilityName)
         }
         
@@ -92,7 +96,13 @@ extension AbilityCenter {
                 AbilityMonitor.shared.record(event: .duplicateRegisteFunc(funcInfo.funcKey, existFunc, funcInfo.block))
             }
             AbilityMonitor.shared.record(event: .registeFunc(funcInfo.funcKey))
-            storage[key] = funcInfo.block;
+            storage[key] = funcInfo.block
+        }
+    }
+    
+    func removeFuncs(_ funcs: [any FuncKeyProtocol]) {
+        funcs.forEach { funcKey in
+            removeFuncWithKey(funcKey)
         }
     }
     

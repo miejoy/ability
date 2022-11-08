@@ -29,7 +29,11 @@ let abilityConfig: AbilityConfig = {
             .init(funcVoidToVoid, Funcs.voidToVoid),
             .init(funcStringToOptionalInt, Funcs.stringToOptionalInt),
             .init(funcVoidToOptionalInt, Funcs.voidToOptionalInt),
-            .init(funcVoidToOptionalInt, Funcs.voidToOptionalInt)
+            .init(funcVoidToOptionalInt, Funcs.voidToOptionalInt),
+            .init(otherFuncStringToInt, Funcs.stringToInt)
+        ],
+        removeFuncs: [
+            otherFuncStringToInt
         ]
     )
 }()

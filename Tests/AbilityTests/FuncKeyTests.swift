@@ -17,6 +17,7 @@ final class FunctionKeyTests: XCTestCase {
         XCTAssertNotNil(AbilityCenter.shared.storage[AnyHashable(funcVoidToVoid)] as? () -> Void)
         XCTAssertNotNil(AbilityCenter.shared.storage[AnyHashable(funcStringToOptionalInt)] as? (String) -> Int?)
         XCTAssertNotNil(AbilityCenter.shared.storage[AnyHashable(funcVoidToOptionalInt)] as? () -> Int?)
+        XCTAssertNil(AbilityCenter.shared.storage[AnyHashable(otherFuncStringToInt)])
     }
     
     func testRegisterFuncs() {
