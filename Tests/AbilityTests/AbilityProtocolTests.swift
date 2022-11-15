@@ -84,17 +84,17 @@ final class AbilityProtocolTests: XCTestCase {
         
         XCTAssertNil(AbilityCenter.shared.storage[s_otherAbilityName.identifier])
         
-        AbilityCenter.shared.registeAbilities([DefaultOtherAbility()])
+        AbilityCenter.shared.registeAbilities([.init(DefaultOtherAbility())])
         XCTAssertNotNil(AbilityCenter.shared.storage[s_otherAbilityName.identifier] as? OtherAbility)
         XCTAssertFalse(oberver.duplicateRegisterGetCall)
         
-        AbilityCenter.shared.registeAbilities([DefaultOtherAbility()])
+        AbilityCenter.shared.registeAbilities([.init(DefaultOtherAbility())])
         XCTAssertTrue(oberver.duplicateRegisterGetCall)
         
         cancellable.cancel()
     }
     
-    func testRegisterAbilityMismatch() {
+    func testRegisteAbilityMismatch() {
         AbilityMonitor.shared.arrObservers = []
         class Oberver: AbilityMonitorOberver {
             var mismatchGetCall: Bool = false
@@ -109,10 +109,43 @@ final class AbilityProtocolTests: XCTestCase {
         
         XCTAssertFalse(oberver.mismatchGetCall)
         
-        AbilityCenter.shared.registeAbilities([DefaultMismatchAbility()])
+        AbilityCenter.shared.registeAbilities([.init(DefaultMismatchAbility())])
         XCTAssertTrue(oberver.mismatchGetCall)
         
         cancellable.cancel()
+    }
+    
+    func testRegisteSubAbility() {
+        // 先读取单粒，在清空 config 不影响单例
+        _ = AbilityCenter.shared
+        g_appConfig = [:]
+        
+        let abilityCenter = AbilityCenter()
+        
+        let networkAbility = DefaultNetworkAbility()
+        let subNetworkAbility = DefaultSubNetworkAbility()
+        
+        XCTAssertEqual(abilityCenter.storage.count, 0)
+        XCTAssertNotEqual(DefaultNetworkAbility.abilityName, DefaultSubNetworkAbility.abilityName)
+        
+        abilityCenter.registeAbilities([.init(networkAbility), .init(subNetworkAbility)])
+        
+        XCTAssertEqual(abilityCenter.storage.count, 2)
+        let storeNetworkAbility = abilityCenter.storage[DefaultNetworkAbility.abilityName.identifier] as? NetworkAbility
+        let storeSubNetworkAbility = abilityCenter.storage[DefaultSubNetworkAbility.abilityName.identifier] as? SubNetworkAbility
+        XCTAssertNotNil(storeNetworkAbility)
+        XCTAssertNotNil(storeSubNetworkAbility)
+        XCTAssertTrue(storeNetworkAbility! === networkAbility)
+        XCTAssertTrue(storeSubNetworkAbility! === subNetworkAbility)
+        
+        abilityCenter.registeAbilities([.init(subNetworkAbility, for: DefaultNetworkAbility.abilityName)])
+        XCTAssertEqual(abilityCenter.storage.count, 2)
+        let storeNetworkAbility2 = abilityCenter.storage[DefaultNetworkAbility.abilityName.identifier] as? NetworkAbility
+        let storeSubNetworkAbility2 = abilityCenter.storage[DefaultSubNetworkAbility.abilityName.identifier] as? SubNetworkAbility
+        XCTAssertNotNil(storeNetworkAbility2)
+        XCTAssertNotNil(storeSubNetworkAbility2)
+        XCTAssertTrue(storeNetworkAbility2! === subNetworkAbility)
+        XCTAssertTrue(storeSubNetworkAbility2! === subNetworkAbility)
     }
     
     func testUserDefaultAbilit() {

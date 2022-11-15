@@ -13,6 +13,7 @@ public extension ConfigKey where Data == AbilityConfig {
     static let abilityConfig = ConfigKey<AbilityConfig>()
 }
 
+/// 能力配置
 public struct AbilityConfig {
     /// 是否屏蔽 能力自动扫描，默认为 true，即屏蔽自动扫描，设置为 false 可关闭自动扫描，可以节约 半秒钟时间
     let blockAbiliesAutoSearch: Bool
@@ -21,7 +22,7 @@ public struct AbilityConfig {
     /// 是否在加载完成后禁用方法注册，避免运行过程中的注册方法被替换，默认为 false
     let blockFuncRegisteAfterLoad: Bool
     /// 能力列表
-    let abilities: [any AbilityProtocol]
+    let abilities: [AbilityWrapper]
     /// 注册方法列表
     let funcs: [FuncWrapper]
     /// 移除方法列表
@@ -42,7 +43,7 @@ public struct AbilityConfig {
         blockAbiliesAutoSearch: Bool = true,
         needCheckAbility: Bool = true,
         blockFuncRegisteAfterLoad: Bool = false,
-        abilities: [any AbilityProtocol] = [],
+        abilities: [AbilityWrapper] = [],
         funcs: [FuncWrapper] = [],
         removeFuncs: [any FuncKeyProtocol] = [],
         onLoadCallBack: (() -> Void)? = nil

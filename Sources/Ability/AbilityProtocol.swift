@@ -46,3 +46,18 @@ public struct AbilityName: CustomStringConvertible, Hashable {
         identifier.hash(into: &hasher)
     }
 }
+
+public struct AbilityWrapper {
+    let abilityName: AbilityName
+    let ability: any AbilityProtocol
+    
+    public init<T:AbilityProtocol>(_ ability: T) {
+        self.abilityName = T.abilityName
+        self.ability = ability
+    }
+    
+    public init(_ ability: any AbilityProtocol, for abilityName: AbilityName) {
+        self.abilityName = abilityName
+        self.ability = ability
+    }
+}

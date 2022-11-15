@@ -19,8 +19,8 @@ let abilityConfig: AbilityConfig = {
     .init(
         blockFuncRegisteAfterLoad: false,
         abilities: [
-            DefaultNetworkAbility(),
-            DefaultLocalizedAbility()
+            .init(DefaultNetworkAbility()),
+            .init(DefaultLocalizedAbility())
         ],
         funcs: [
             .init(funcStringToInt, Funcs.stringToInt),

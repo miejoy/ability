@@ -57,10 +57,11 @@ public class AbilityCenter {
 // MARK: - Ability
 extension AbilityCenter {
     /// 注册能力列表
-    func registeAbilities(_ abilities: [any AbilityProtocol]) {
+    func registeAbilities(_ abilities: [AbilityWrapper]) {
         // 先注册
-        abilities.forEach { ability in
-            let abilityName = type(of: ability).abilityName
+        abilities.forEach { abilityInfo in
+            let abilityName = abilityInfo.abilityName
+            let ability = abilityInfo.ability
             if config.needCheckAbility {
                 guard abilityName.runCheck(ability) else {
                     AbilityMonitor.shared.record(event: .registeAbilityMismatch(ability))

@@ -8,6 +8,7 @@
 @testable import Ability
 
 let s_networkAbilityName = AbilityName(NetworkAbility.self)
+let s_subNetworkAbilityName = AbilityName(SubNetworkAbility.self)
 let s_localizedAbilityName = AbilityName(LocalizedAbility.self)
 let s_otherAbilityName = AbilityName(OtherAbility.self)
 let s_notRegisteAbilityName = AbilityName(NotRegisteAbility.self)
@@ -30,7 +31,13 @@ class DefaultNetworkAbility: NetworkAbility {
 }
 
 protocol SubNetworkAbility: NetworkAbility {}
+extension SubNetworkAbility {
+    static var abilityName: AbilityName { s_subNetworkAbilityName }
+}
 
+class DefaultSubNetworkAbility: SubNetworkAbility {
+    func doSomething() {}
+}
 
 protocol LocalizedAbility: AbilityProtocol {}
 extension LocalizedAbility {
