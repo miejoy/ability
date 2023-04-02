@@ -43,7 +43,7 @@ public struct AbilityName: CustomStringConvertible, Hashable {
     }
     
     public func hash(into hasher: inout Hasher) {
-        identifier.hash(into: &hasher)
+        hasher.combine(identifier)
     }
 }
 

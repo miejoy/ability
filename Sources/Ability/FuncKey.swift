@@ -58,7 +58,7 @@ public struct DefaultFuncKey<Input, Return>: DefaultFuncKeyProtocol {
     }
     
     public func hash(into hasher: inout Hasher) {
-        funcKey.hash(into: &hasher)
+        hasher.combine(funcKey)
     }
 }
 
