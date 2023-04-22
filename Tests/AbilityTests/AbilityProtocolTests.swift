@@ -156,8 +156,8 @@ final class AbilityProtocolTests: XCTestCase {
         
         XCTAssertEqual(abilityCenter.config.blockAbiliesAutoSearch, true)
         XCTAssertEqual(abilityCenter.config.needCheckAbility, true)
-        XCTAssertTrue(abilityCenter.config.abilities.isEmpty)
-        XCTAssertTrue(abilityCenter.config.funcs.isEmpty)
+        XCTAssertTrue(abilityCenter.config.abilities().isEmpty)
+        XCTAssertTrue(abilityCenter.config.funcs().isEmpty)
     }
 }
 

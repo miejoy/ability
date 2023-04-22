@@ -22,11 +22,11 @@ public struct AbilityConfig {
     /// 是否在加载完成后禁用方法注册，避免运行过程中的注册方法被替换，默认为 false
     let blockFuncRegisteAfterLoad: Bool
     /// 能力列表
-    let abilities: [AbilityWrapper]
+    let abilities: () -> [AbilityWrapper]
     /// 注册方法列表
-    let funcs: [FuncWrapper]
+    let funcs: () -> [FuncWrapper]
     /// 移除方法列表
-    let removeFuncs: [any FuncKeyProtocol]
+    let removeFuncs: () -> [any FuncKeyProtocol]
     /// 能力加载完成回调
     let onLoadCallBack: (() -> Void)?
     
@@ -43,9 +43,9 @@ public struct AbilityConfig {
         blockAbiliesAutoSearch: Bool = true,
         needCheckAbility: Bool = true,
         blockFuncRegisteAfterLoad: Bool = false,
-        abilities: [AbilityWrapper] = [],
-        funcs: [FuncWrapper] = [],
-        removeFuncs: [any FuncKeyProtocol] = [],
+        abilities: @escaping @autoclosure () -> [AbilityWrapper] = [],
+        funcs: @escaping @autoclosure () -> [FuncWrapper] = [],
+        removeFuncs: @escaping @autoclosure () -> [any FuncKeyProtocol] = [],
         onLoadCallBack: (() -> Void)? = nil
     ) {
         self.blockAbiliesAutoSearch = blockAbiliesAutoSearch

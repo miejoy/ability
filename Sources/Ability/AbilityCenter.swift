@@ -30,7 +30,7 @@ public class AbilityCenter {
         self.config = Config.value(for: .abilityConfig, AbilityConfig())
         
         // 注册配置中的能力列表
-        registeAbilities(config.abilities)
+        registeAbilities(config.abilities())
     }
     
     func load() {
@@ -42,10 +42,10 @@ public class AbilityCenter {
         loadAbilities()
         
         // 注册方法列表
-        registeFuncs(config.funcs)
+        registeFuncs(config.funcs())
         
         // 移除方法
-        removeFuncs(config.removeFuncs)
+        removeFuncs(config.removeFuncs())
                 
         // 调用加载完成方法
         config.onLoadCallBack?()

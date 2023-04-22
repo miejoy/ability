@@ -6,12 +6,14 @@
 //
 
 @testable import Ability
+import AutoConfig
 
 let s_networkAbilityName = AbilityName(NetworkAbility.self)
 let s_subNetworkAbilityName = AbilityName(SubNetworkAbility.self)
 let s_localizedAbilityName = AbilityName(LocalizedAbility.self)
 let s_otherAbilityName = AbilityName(OtherAbility.self)
 let s_notRegisteAbilityName = AbilityName(NotRegisteAbility.self)
+let s_autoConfigAbilityName = AbilityName(AutoConfigAbility.self)
 
 protocol NetworkAbility: AbilityProtocol {
     func doSomething()
@@ -69,4 +71,13 @@ extension MismatchAbility {
     static var abilityName: AbilityName { s_notRegisteAbilityName }
 }
 class DefaultMismatchAbility: MismatchAbility {
+}
+
+
+protocol AutoConfigAbility: AbilityProtocol {}
+extension AutoConfigAbility {
+    static var abilityName: AbilityName { s_autoConfigAbilityName }
+}
+class DefaultAutoConfigAbility: AutoConfigAbility {
+    var configValue = Config.value(for: .appId)
 }

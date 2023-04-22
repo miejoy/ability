@@ -20,7 +20,8 @@ let abilityConfig: AbilityConfig = {
         blockFuncRegisteAfterLoad: false,
         abilities: [
             .init(DefaultNetworkAbility()),
-            .init(DefaultLocalizedAbility())
+            .init(DefaultLocalizedAbility()),
+            .init(DefaultAutoConfigAbility())
         ],
         funcs: [
             .init(funcStringToInt, Funcs.stringToInt),
