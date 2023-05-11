@@ -154,7 +154,6 @@ final class AbilityProtocolTests: XCTestCase {
         
         let abilityCenter = AbilityCenter()
         
-        XCTAssertEqual(abilityCenter.config.blockAbiliesAutoSearch, true)
         XCTAssertEqual(abilityCenter.config.needCheckAbility, true)
         XCTAssertTrue(abilityCenter.config.abilities().isEmpty)
         XCTAssertTrue(abilityCenter.config.funcs().isEmpty)

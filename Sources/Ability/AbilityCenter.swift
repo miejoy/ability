@@ -22,7 +22,7 @@ public class AbilityCenter {
     /// 任意储存器，目前外部只提供读取
     private(set) public var storage: [AnyHashable:Any] = [:]
     var config: AbilityConfig
-    var useAbilitiyNames: Set<AbilityName> = []
+    var usedAbilitiyNames: Set<AbilityName> = []
     var isLoaded: Bool = false
     
     init() {
@@ -73,14 +73,14 @@ extension AbilityCenter {
             }
             AbilityMonitor.shared.record(event: .registeAbility(ability))
             storage[abilityName.identifier] = ability
-            useAbilitiyNames.insert(abilityName)
+            usedAbilitiyNames.insert(abilityName)
         }
         
     }
     
     // 调用能力加载
     func loadAbilities() {
-        useAbilitiyNames.forEach { abilityName in
+        usedAbilitiyNames.forEach { abilityName in
             (storage[abilityName.identifier] as? (any AbilityProtocol))?.load()
         }
     }

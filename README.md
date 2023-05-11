@@ -77,7 +77,6 @@ extension Ability {
         Ability.getAbility(with: DefaultNetworkAbility()) as! NetworkAbility
     }()
 }
-
 ```
 
 3、自动注册能力
@@ -87,6 +86,7 @@ extension Ability {
 
 ```swift
 import Ability
+import AutoConfig
 
 class UserConfig: ConfigProtocol {
 
@@ -98,7 +98,7 @@ class UserConfig: ConfigProtocol {
 let abilityConfig: AbilityConfig = {
     .init(
         abilities: [
-            DefaultNetworkAbility(),
+            .init(DefaultNetworkAbility()),
         ]
     )
 }()
