@@ -8,7 +8,7 @@
 import Foundation
 import AutoConfig
 
-public extension ConfigKey where Data == AbilityConfig {
+public extension ConfigKey where Value == AbilityConfig {
     /// 能力配置 key
     static let abilityConfig = ConfigKey<AbilityConfig>()
 }

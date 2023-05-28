@@ -10,8 +10,8 @@ import AutoConfig
 
 class UserConfig: ConfigProtocol {
 
-    static var configs: Set<ConfigPair> = [
-        .init(.abilityConfig, abilityConfig)
+    static var configs: [ConfigPair] = [
+        .make(.abilityConfig, abilityConfig)
     ]
 }
 
