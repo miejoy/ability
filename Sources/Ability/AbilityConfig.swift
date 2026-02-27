@@ -18,7 +18,7 @@ public struct AbilityConfig: Sendable {
     /// 是否在注册时检查对应能力与能力名称是否匹配，默认为 true
     let needCheckAbility: Bool
     /// 是否在加载完成后禁用方法注册，避免运行过程中的注册方法被替换，默认为 false
-    let blockFuncRegisteAfterLoad: Bool
+    let blockFuncRegisterAfterLoad: Bool
     /// 能力列表
     let abilities: @Sendable () -> [AbilityWrapper]
     /// 注册方法列表
@@ -30,7 +30,7 @@ public struct AbilityConfig: Sendable {
     
     /// 构造能力配置
     /// - Parameter needCheckAbility: 是否在注册时检查对应能力与能力名称是否匹配，默认为 true
-    /// - Parameter blockFuncRegisteAfterLoad: 是否在加载完成后禁用方法注册，避免运行过程中的注册方法被替换，默认为 false
+    /// - Parameter blockFuncRegisterAfterLoad: 是否在加载完成后禁用方法注册，避免运行过程中的注册方法被替换，默认为 false
     /// - Parameter abilities: 能力列表
     /// - Parameter funcs: 注册方法列表
     /// - Parameter removeFuncs: 移除方法列表
@@ -38,14 +38,14 @@ public struct AbilityConfig: Sendable {
     /// - Returns Self: 返回构造好的能力配置
      public init(
         needCheckAbility: Bool = true,
-        blockFuncRegisteAfterLoad: Bool = false,
+        blockFuncRegisterAfterLoad: Bool = false,
         abilities: @Sendable @escaping @autoclosure () -> [AbilityWrapper] = [],
         funcs: @Sendable @escaping @autoclosure () -> [FuncWrapper] = [],
         removeFuncs: @Sendable @escaping @autoclosure () -> [any FuncKeyProtocol] = [],
         onLoadCallBack: (@Sendable () -> Void)? = nil
     ) {
         self.needCheckAbility = needCheckAbility
-        self.blockFuncRegisteAfterLoad = blockFuncRegisteAfterLoad
+        self.blockFuncRegisterAfterLoad = blockFuncRegisterAfterLoad
         self.abilities = abilities
         self.funcs = funcs
         self.removeFuncs = removeFuncs

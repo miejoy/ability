@@ -17,7 +17,7 @@ class UserConfig: ConfigProtocol {
 
 let abilityConfig: AbilityConfig = {
     .init(
-        blockFuncRegisteAfterLoad: false,
+        blockFuncRegisterAfterLoad: false,
         abilities: [
             .init(DefaultNetworkAbility()),
             .init(DefaultLocalizedAbility()),

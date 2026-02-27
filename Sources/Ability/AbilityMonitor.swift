@@ -11,14 +11,14 @@ import ModuleMonitor
 
 /// 能力事件
 public enum AbilityEvent: MonitorEvent, @unchecked Sendable {
-    case registeAbility(AbilityProtocol)
-    case registeFunc(any FuncKeyProtocol)
+    case registerAbility(AbilityProtocol)
+    case registerFunc(any FuncKeyProtocol)
     case removeFunc(any FuncKeyProtocol)
-    case registeAbilityMismatch(AbilityProtocol)
-    case blockFuncRegisteAfterLoad(_ funcKey: any FuncKeyProtocol, _ func: Any)
+    case registerAbilityMismatch(AbilityProtocol)
+    case blockFuncRegisterAfterLoad(_ funcKey: any FuncKeyProtocol, _ func: Any)
     case blockFuncRemoveAfterLoad(_ funcKey: any FuncKeyProtocol)
-    case duplicateRegisteAbility(_ old: Any, _ new: Any)
-    case duplicateRegisteFunc(_ funcKey: any FuncKeyProtocol, _ old: Any, _ new: Any)
+    case duplicateRegisterAbility(_ old: Any, _ new: Any)
+    case duplicateRegisterFunc(_ funcKey: any FuncKeyProtocol, _ old: Any, _ new: Any)
     case funcNotFoundWithKey(any FuncKeyProtocol)
     case fatalError(String)
 }

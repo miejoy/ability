@@ -25,7 +25,7 @@ public class AbilityCenter {
     /// 任意储存器，目前外部只提供读取
     private(set) public var storage: [AnyHashable:Any] = [:]
     var config: AbilityConfig
-    var usedAbilitiyNames: Set<AbilityName> = []
+    var usedAbilityNames: Set<AbilityName> = []
     var isLoaded: Bool = false
     
     init() {
@@ -33,7 +33,7 @@ public class AbilityCenter {
         self.config = Config.value(for: .abilityConfig, AbilityConfig())
         
         // 注册配置中的能力列表
-        registeAbilities(config.abilities())
+        registerAbilities(config.abilities())
     }
     
     func load() {
@@ -45,7 +45,7 @@ public class AbilityCenter {
         loadAbilities()
         
         // 注册方法列表
-        registeFuncs(config.funcs())
+        registerFuncs(config.funcs())
         
         // 移除方法
         removeFuncs(config.removeFuncs())
@@ -60,30 +60,30 @@ public class AbilityCenter {
 // MARK: - Ability
 extension AbilityCenter {
     /// 注册能力列表
-    func registeAbilities(_ abilities: [AbilityWrapper]) {
+    func registerAbilities(_ abilities: [AbilityWrapper]) {
         // 先注册
         abilities.forEach { abilityInfo in
             let abilityName = abilityInfo.abilityName
             let ability = abilityInfo.ability
             if config.needCheckAbility {
                 guard abilityName.runCheck(ability) else {
-                    AbilityMonitor.shared.record(event: .registeAbilityMismatch(ability))
+                    AbilityMonitor.shared.record(event: .registerAbilityMismatch(ability))
                     return
                 }
             }
             if let existAbility = storage[abilityName.identifier] {
-                AbilityMonitor.shared.record(event: .duplicateRegisteAbility(existAbility, ability))
+                AbilityMonitor.shared.record(event: .duplicateRegisterAbility(existAbility, ability))
             }
-            AbilityMonitor.shared.record(event: .registeAbility(ability))
+            AbilityMonitor.shared.record(event: .registerAbility(ability))
             storage[abilityName.identifier] = ability
-            usedAbilitiyNames.insert(abilityName)
+            usedAbilityNames.insert(abilityName)
         }
         
     }
     
     // 调用能力加载
     func loadAbilities() {
-        usedAbilitiyNames.forEach { abilityName in
+        usedAbilityNames.forEach { abilityName in
             (storage[abilityName.identifier] as? (any AbilityProtocol))?.load()
         }
     }
@@ -93,13 +93,13 @@ extension AbilityCenter {
 
 extension AbilityCenter {
     /// 注册方法列表
-    func registeFuncs(_ funcs: [FuncWrapper]) {
+    func registerFuncs(_ funcs: [FuncWrapper]) {
         funcs.forEach { funcInfo in
             let key = AnyHashable(funcInfo.funcKey)
             if let existFunc = storage[key] {
-                AbilityMonitor.shared.record(event: .duplicateRegisteFunc(funcInfo.funcKey, existFunc, funcInfo.block))
+                AbilityMonitor.shared.record(event: .duplicateRegisterFunc(funcInfo.funcKey, existFunc, funcInfo.block))
             }
-            AbilityMonitor.shared.record(event: .registeFunc(funcInfo.funcKey))
+            AbilityMonitor.shared.record(event: .registerFunc(funcInfo.funcKey))
             storage[key] = funcInfo.block
         }
     }
@@ -113,15 +113,15 @@ extension AbilityCenter {
     /// 注册可运行方法
     public func register<Func: FuncKeyProtocol>(_ funcKey: Func, block: @escaping ((Func.Input)->Func.Return)) {
         DispatchQueue.syncOnAbilityQueue {
-            if config.blockFuncRegisteAfterLoad && isLoaded {
-                AbilityMonitor.shared.record(event: .blockFuncRegisteAfterLoad(funcKey, block))
+            if config.blockFuncRegisterAfterLoad && isLoaded {
+                AbilityMonitor.shared.record(event: .blockFuncRegisterAfterLoad(funcKey, block))
                 return
             }
             let key = AnyHashable(funcKey)
             if let existFunc = storage[key] {
-                AbilityMonitor.shared.record(event: .duplicateRegisteFunc(funcKey, existFunc, block))
+                AbilityMonitor.shared.record(event: .duplicateRegisterFunc(funcKey, existFunc, block))
             }
-            AbilityMonitor.shared.record(event: .registeFunc(funcKey))
+            AbilityMonitor.shared.record(event: .registerFunc(funcKey))
             self.storage[key] = block
         }
     }
@@ -129,15 +129,15 @@ extension AbilityCenter {
     /// 注册可运行无入参方法
     public func register<Func: FuncKeyProtocol>(_ funcKey: Func, block: @escaping (()->Func.Return)) where Func.Input == Void {
         DispatchQueue.syncOnAbilityQueue {
-            if config.blockFuncRegisteAfterLoad && isLoaded {
-                AbilityMonitor.shared.record(event: .blockFuncRegisteAfterLoad(funcKey, block))
+            if config.blockFuncRegisterAfterLoad && isLoaded {
+                AbilityMonitor.shared.record(event: .blockFuncRegisterAfterLoad(funcKey, block))
                 return
             }
             let key = AnyHashable(funcKey)
             if let existFunc = storage[key] {
-                AbilityMonitor.shared.record(event: .duplicateRegisteFunc(funcKey, existFunc, block))
+                AbilityMonitor.shared.record(event: .duplicateRegisterFunc(funcKey, existFunc, block))
             }
-            AbilityMonitor.shared.record(event: .registeFunc(funcKey))
+            AbilityMonitor.shared.record(event: .registerFunc(funcKey))
             self.storage[funcKey] = block
         }
     }
@@ -145,7 +145,7 @@ extension AbilityCenter {
     /// 移除注册的对应方法
     public func removeFuncWithKey<Func: FuncKeyProtocol>(_ funcKey: Func) {
         DispatchQueue.syncOnAbilityQueue {
-            if config.blockFuncRegisteAfterLoad && isLoaded {
+            if config.blockFuncRegisterAfterLoad && isLoaded {
                 AbilityMonitor.shared.record(event: .blockFuncRemoveAfterLoad(funcKey))
                 return
             }

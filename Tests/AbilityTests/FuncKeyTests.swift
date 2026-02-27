@@ -128,12 +128,12 @@ final class FunctionKeyTests: XCTestCase {
         XCTAssertNil(AbilityCenter.shared.storage[AnyHashable(otherFuncStringToInt)] as? (String) -> Int)
     }
     
-    func testFuncDuplicateRegiste() {
+    func testFuncDuplicateRegister() {
         AbilityMonitor.shared.arrObservers = []
         final class Oberver: AbilityMonitorObserver, @unchecked Sendable {
             var duplicateRegisterGetCall: Bool = false
             func receiveAbilityEvent(_ event: AbilityEvent) {
-                if case .duplicateRegisteFunc(_, _, _)  = event {
+                if case .duplicateRegisterFunc(_, _, _)  = event {
                     duplicateRegisterGetCall = true
                 }
             }
@@ -207,16 +207,16 @@ final class FunctionKeyTests: XCTestCase {
         cancellable.cancel()
     }
     
-    func testFuncRegisteAfterLoad() {
+    func testFuncRegisterAfterLoad() {
         let oldAppConfig = g_appConfig
-        g_appConfig = [AnyHashable(ConfigKey.abilityConfig): AbilityConfig(blockFuncRegisteAfterLoad: true)]
+        g_appConfig = [AnyHashable(ConfigKey.abilityConfig): AbilityConfig(blockFuncRegisterAfterLoad: true)]
         
         AbilityMonitor.shared.arrObservers = []
         final class Oberver: AbilityMonitorObserver, @unchecked Sendable {
-            var blockFuncRegisteAfterLoadGetCall: Bool = false
+            var blockFuncRegisterAfterLoadGetCall: Bool = false
             func receiveAbilityEvent(_ event: AbilityEvent) {
-                if case .blockFuncRegisteAfterLoad(_, _) = event {
-                    blockFuncRegisteAfterLoadGetCall = true
+                if case .blockFuncRegisterAfterLoad(_, _) = event {
+                    blockFuncRegisterAfterLoadGetCall = true
                 }
             }
         }
@@ -227,13 +227,13 @@ final class FunctionKeyTests: XCTestCase {
         abilityCenter.load()
         abilityCenter.load()
         
-        XCTAssertFalse(oberver.blockFuncRegisteAfterLoadGetCall)
+        XCTAssertFalse(oberver.blockFuncRegisterAfterLoadGetCall)
         abilityCenter.register(funcStringToInt, block: Funcs.stringToInt)
-        XCTAssertTrue(oberver.blockFuncRegisteAfterLoadGetCall)
+        XCTAssertTrue(oberver.blockFuncRegisterAfterLoadGetCall)
         
-        oberver.blockFuncRegisteAfterLoadGetCall = false
+        oberver.blockFuncRegisterAfterLoadGetCall = false
         abilityCenter.register(funcVoidToInt, block: Funcs.voidToInt)
-        XCTAssertTrue(oberver.blockFuncRegisteAfterLoadGetCall)
+        XCTAssertTrue(oberver.blockFuncRegisterAfterLoadGetCall)
         
         cancellable.cancel()
         g_appConfig = oldAppConfig
@@ -241,7 +241,7 @@ final class FunctionKeyTests: XCTestCase {
     
     func testFuncRemoveAfterLoad() {
         let oldAppConfig = g_appConfig
-        g_appConfig = [AnyHashable(ConfigKey.abilityConfig): AbilityConfig(blockFuncRegisteAfterLoad: true, funcs: [.init(funcStringToInt, Funcs.stringToInt)])]
+        g_appConfig = [AnyHashable(ConfigKey.abilityConfig): AbilityConfig(blockFuncRegisterAfterLoad: true, funcs: [.init(funcStringToInt, Funcs.stringToInt)])]
         
         AbilityMonitor.shared.arrObservers = []
         final class Oberver: AbilityMonitorObserver, @unchecked Sendable {

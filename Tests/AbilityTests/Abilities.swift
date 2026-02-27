@@ -12,7 +12,7 @@ let s_networkAbilityName = AbilityName(NetworkAbility.self)
 let s_subNetworkAbilityName = AbilityName(SubNetworkAbility.self)
 let s_localizedAbilityName = AbilityName(LocalizedAbility.self)
 let s_otherAbilityName = AbilityName(OtherAbility.self)
-let s_notRegisteAbilityName = AbilityName(NotRegisteAbility.self)
+let s_notRegisterAbilityName = AbilityName(NotRegisterAbility.self)
 let s_autoConfigAbilityName = AbilityName(AutoConfigAbility.self)
 
 protocol NetworkAbility: AbilityProtocol, Sendable {
@@ -59,16 +59,16 @@ extension OtherAbility {
 class DefaultOtherAbility: OtherAbility {
 }
 
-protocol NotRegisteAbility: AbilityProtocol {}
-extension NotRegisteAbility {
-    static var abilityName: AbilityName { s_notRegisteAbilityName }
+protocol NotRegisterAbility: AbilityProtocol {}
+extension NotRegisterAbility {
+    static var abilityName: AbilityName { s_notRegisterAbilityName }
 }
-class DefaultNotRegisteAbility: NotRegisteAbility {
+class DefaultNotRegisterAbility: NotRegisterAbility {
 }
 
 protocol MismatchAbility: AbilityProtocol {}
 extension MismatchAbility {
-    static var abilityName: AbilityName { s_notRegisteAbilityName }
+    static var abilityName: AbilityName { s_notRegisterAbilityName }
 }
 class DefaultMismatchAbility: MismatchAbility {
 }
