@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import ModuleMonitor
 
 /// 能力模块
 public enum Ability {}

@@ -15,7 +15,7 @@ let s_otherAbilityName = AbilityName(OtherAbility.self)
 let s_notRegisteAbilityName = AbilityName(NotRegisteAbility.self)
 let s_autoConfigAbilityName = AbilityName(AutoConfigAbility.self)
 
-protocol NetworkAbility: AbilityProtocol {
+protocol NetworkAbility: AbilityProtocol, Sendable {
     func doSomething()
 }
 extension NetworkAbility {
@@ -23,12 +23,12 @@ extension NetworkAbility {
 }
 
 extension Ability {
-    static var network : NetworkAbility = {
+    static let network : NetworkAbility = {
         Ability.getAbility(with: DefaultNetworkAbility()) as! NetworkAbility
     }()
 }
 
-class DefaultNetworkAbility: NetworkAbility {
+final class DefaultNetworkAbility: NetworkAbility {
     func doSomething() {}
 }
 
@@ -37,7 +37,7 @@ extension SubNetworkAbility {
     static var abilityName: AbilityName { s_subNetworkAbilityName }
 }
 
-class DefaultSubNetworkAbility: SubNetworkAbility {
+final class DefaultSubNetworkAbility: SubNetworkAbility {
     func doSomething() {}
 }
 

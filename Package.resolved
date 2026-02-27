@@ -1,4 +1,5 @@
 {
+  "originHash" : "a1f6a2626c214496190877225f355688c45d2098bbbde81cadec52fe2e4faf53",
   "pins" : [
     {
       "identity" : "auto-config",
@@ -6,9 +7,18 @@
       "location" : "https://github.com/miejoy/auto-config.git",
       "state" : {
         "branch" : "main",
-        "revision" : "de22f67c42fcf0564b20dc96abb2487bb436054c"
+        "revision" : "d53498596605df26e2a1dd23980e02fb3329b049"
+      }
+    },
+    {
+      "identity" : "module-monitor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/miejoy/module-monitor.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "0603c5d1e9fe4918dfd5c96649d81d12a30525f9"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

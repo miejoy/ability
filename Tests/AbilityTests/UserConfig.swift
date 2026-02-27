@@ -10,7 +10,7 @@ import AutoConfig
 
 class UserConfig: ConfigProtocol {
 
-    static var configs: [ConfigPair] = [
+    static let configs: [ConfigPair] = [
         .make(.abilityConfig, abilityConfig)
     ]
 }

@@ -8,6 +8,7 @@
 import XCTest
 @testable import Ability
 @testable import AutoConfig
+@testable import ModuleMonitor
 
 final class FunctionKeyTests: XCTestCase {
     func testAutoRegisterFuncs() {
@@ -129,7 +130,7 @@ final class FunctionKeyTests: XCTestCase {
     
     func testFuncDuplicateRegiste() {
         AbilityMonitor.shared.arrObservers = []
-        class Oberver: AbilityMonitorOberver {
+        final class Oberver: AbilityMonitorObserver, @unchecked Sendable {
             var duplicateRegisterGetCall: Bool = false
             func receiveAbilityEvent(_ event: AbilityEvent) {
                 if case .duplicateRegisteFunc(_, _, _)  = event {
@@ -161,7 +162,7 @@ final class FunctionKeyTests: XCTestCase {
     
     func testExecuteFuncNotFound() {
         AbilityMonitor.shared.arrObservers = []
-        class Oberver: AbilityMonitorOberver {
+        final class Oberver: AbilityMonitorObserver, @unchecked Sendable {
             var funcNotFoundGetCall: Bool = false
             func receiveAbilityEvent(_ event: AbilityEvent) {
                 if case .funcNotFoundWithKey(_) = event {
@@ -211,7 +212,7 @@ final class FunctionKeyTests: XCTestCase {
         g_appConfig = [AnyHashable(ConfigKey.abilityConfig): AbilityConfig(blockFuncRegisteAfterLoad: true)]
         
         AbilityMonitor.shared.arrObservers = []
-        class Oberver: AbilityMonitorOberver {
+        final class Oberver: AbilityMonitorObserver, @unchecked Sendable {
             var blockFuncRegisteAfterLoadGetCall: Bool = false
             func receiveAbilityEvent(_ event: AbilityEvent) {
                 if case .blockFuncRegisteAfterLoad(_, _) = event {
@@ -243,7 +244,7 @@ final class FunctionKeyTests: XCTestCase {
         g_appConfig = [AnyHashable(ConfigKey.abilityConfig): AbilityConfig(blockFuncRegisteAfterLoad: true, funcs: [.init(funcStringToInt, Funcs.stringToInt)])]
         
         AbilityMonitor.shared.arrObservers = []
-        class Oberver: AbilityMonitorOberver {
+        final class Oberver: AbilityMonitorObserver, @unchecked Sendable {
             var blockFuncRemoveAfterLoadGetCall: Bool = false
             func receiveAbilityEvent(_ event: AbilityEvent) {
                 if case .blockFuncRemoveAfterLoad(_) = event {

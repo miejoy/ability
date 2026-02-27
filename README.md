@@ -5,13 +5,13 @@ Ability 属于基础能力模块，对外提供能力注册和能力获取功能
 [![Swift](https://github.com/miejoy/ability/actions/workflows/test.yml/badge.svg)](https://github.com/miejoy/ability/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/miejoy/ability/branch/main/graph/badge.svg)](https://codecov.io/gh/miejoy/ability)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
-[![Swift](https://img.shields.io/badge/swift-5.4-brightgreen.svg)](https://swift.org)
+[![Swift](https://img.shields.io/badge/swift-6.2-brightgreen.svg)](https://swift.org)
 
 ## 依赖
 
 - iOS 13.0+ / macOS 10.15+
-- Xcode 14.0+
-- Swift 5.7+
+- Xcode 26.0+
+- Swift 6.2+
 
 ## 简介
 

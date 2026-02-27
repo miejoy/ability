@@ -7,60 +7,40 @@
 
 import Foundation
 import Combine
+import ModuleMonitor
 
 /// 能力事件
-public enum AbilityEvent {
-    case registeAbility(any AbilityProtocol)
+public enum AbilityEvent: MonitorEvent, @unchecked Sendable {
+    case registeAbility(AbilityProtocol)
     case registeFunc(any FuncKeyProtocol)
     case removeFunc(any FuncKeyProtocol)
-    case registeAbilityMismatch(any AbilityProtocol)
+    case registeAbilityMismatch(AbilityProtocol)
     case blockFuncRegisteAfterLoad(_ funcKey: any FuncKeyProtocol, _ func: Any)
     case blockFuncRemoveAfterLoad(_ funcKey: any FuncKeyProtocol)
     case duplicateRegisteAbility(_ old: Any, _ new: Any)
     case duplicateRegisteFunc(_ funcKey: any FuncKeyProtocol, _ old: Any, _ new: Any)
     case funcNotFoundWithKey(any FuncKeyProtocol)
-//    case fatalError(String)
+    case fatalError(String)
 }
 
-public protocol AbilityMonitorOberver: AnyObject {
+public protocol AbilityMonitorObserver: MonitorObserver {
     func receiveAbilityEvent(_ event: AbilityEvent)
 }
 
 /// 能力监听器
-public final class AbilityMonitor {
-        
-    struct Observer {
-        let observerId: Int
-        weak var observer: AbilityMonitorOberver?
-    }
-    
-    /// 监听器共享单例
-    public static var shared: AbilityMonitor = .init()
-    
-    /// 所有观察者
-    var arrObservers: [Observer] = []
-    var generateObserverId: Int = 0
-    
-    required init() {
-    }
-    
-    /// 添加观察者
-    public func addObserver(_ observer: AbilityMonitorOberver) -> AnyCancellable {
-        generateObserverId += 1
-        let observerId = generateObserverId
-        arrObservers.append(.init(observerId: generateObserverId, observer: observer))
-        return AnyCancellable { [weak self] in
-            if let index = self?.arrObservers.firstIndex(where: { $0.observerId == observerId}) {
-                self?.arrObservers.remove(at: index)
-            }
+public final class AbilityMonitor: ModuleMonitor<AbilityEvent>, @unchecked Sendable {
+    public static let shared: AbilityMonitor = {
+        AbilityMonitor { event, observer in
+            (observer as? AbilityMonitorObserver)?.receiveAbilityEvent(event)
         }
+    }()
+
+    public func addObserver(_ observer: AbilityMonitorObserver) -> AnyCancellable {
+        super.addObserver(observer)
     }
     
-    /// 记录对应事件，这里只负责将所有事件传递给观察者
-    @usableFromInline
-    func record(event: AbilityEvent) {
-        guard !arrObservers.isEmpty else { return }
-        arrObservers.forEach { $0.observer?.receiveAbilityEvent(event) }
+    public override func addObserver(_ observer: MonitorObserver) -> AnyCancellable {
+        Swift.fatalError("Only AbilityMonitorObserver can observe this monitor")
     }
 }
 

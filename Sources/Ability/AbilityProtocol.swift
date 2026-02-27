@@ -21,10 +21,10 @@ extension AbilityProtocol {
 }
 
 /// 能力名
-public struct AbilityName: CustomStringConvertible, Hashable {
+public struct AbilityName: CustomStringConvertible, Hashable, Sendable {
     public let identifier: ObjectIdentifier
     let name: String
-    let runCheck: (_ ability: any AbilityProtocol) -> Bool
+    let runCheck: @Sendable (_ ability: any AbilityProtocol) -> Bool
     
     public init<T>(_ protocolType:T.Type) {
         self.identifier = ObjectIdentifier(T.Type.self)

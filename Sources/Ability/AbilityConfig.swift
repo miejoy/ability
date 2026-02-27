@@ -14,19 +14,19 @@ public extension ConfigKey where Value == AbilityConfig {
 }
 
 /// 能力配置
-public struct AbilityConfig {
+public struct AbilityConfig: Sendable {
     /// 是否在注册时检查对应能力与能力名称是否匹配，默认为 true
     let needCheckAbility: Bool
     /// 是否在加载完成后禁用方法注册，避免运行过程中的注册方法被替换，默认为 false
     let blockFuncRegisteAfterLoad: Bool
     /// 能力列表
-    let abilities: () -> [AbilityWrapper]
+    let abilities: @Sendable () -> [AbilityWrapper]
     /// 注册方法列表
-    let funcs: () -> [FuncWrapper]
+    let funcs: @Sendable () -> [FuncWrapper]
     /// 移除方法列表
-    let removeFuncs: () -> [any FuncKeyProtocol]
+    let removeFuncs: @Sendable () -> [any FuncKeyProtocol]
     /// 能力加载完成回调
-    let onLoadCallBack: (() -> Void)?
+    let onLoadCallBack: (@Sendable () -> Void)?
     
     /// 构造能力配置
     /// - Parameter needCheckAbility: 是否在注册时检查对应能力与能力名称是否匹配，默认为 true
@@ -39,10 +39,10 @@ public struct AbilityConfig {
      public init(
         needCheckAbility: Bool = true,
         blockFuncRegisteAfterLoad: Bool = false,
-        abilities: @escaping @autoclosure () -> [AbilityWrapper] = [],
-        funcs: @escaping @autoclosure () -> [FuncWrapper] = [],
-        removeFuncs: @escaping @autoclosure () -> [any FuncKeyProtocol] = [],
-        onLoadCallBack: (() -> Void)? = nil
+        abilities: @Sendable @escaping @autoclosure () -> [AbilityWrapper] = [],
+        funcs: @Sendable @escaping @autoclosure () -> [FuncWrapper] = [],
+        removeFuncs: @Sendable @escaping @autoclosure () -> [any FuncKeyProtocol] = [],
+        onLoadCallBack: (@Sendable () -> Void)? = nil
     ) {
         self.needCheckAbility = needCheckAbility
         self.blockFuncRegisteAfterLoad = blockFuncRegisteAfterLoad

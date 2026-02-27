@@ -10,14 +10,17 @@ import AutoConfig
 
 public class AbilityCenter {
     public static var shared: AbilityCenter {
-        _shared ?? {
-            _shared = .init()
-            _shared?.load()
-            return _shared!
-        }()
+        DispatchQueue.syncOnAbilityQueue {
+            _shared ?? {
+                _shared = .init()
+                _shared?.load()
+                return _shared!
+            }()
+        }
     }
     
-    static var _shared: AbilityCenter? = nil
+    /// 内部使用共享实例，受 AbilityQueue 保护
+    nonisolated(unsafe) static var _shared: AbilityCenter? = nil
     
     /// 任意储存器，目前外部只提供读取
     private(set) public var storage: [AnyHashable:Any] = [:]
@@ -109,40 +112,66 @@ extension AbilityCenter {
     
     /// 注册可运行方法
     public func register<Func: FuncKeyProtocol>(_ funcKey: Func, block: @escaping ((Func.Input)->Func.Return)) {
-        if config.blockFuncRegisteAfterLoad && isLoaded {
-            AbilityMonitor.shared.record(event: .blockFuncRegisteAfterLoad(funcKey, block))
-            return
+        DispatchQueue.syncOnAbilityQueue {
+            if config.blockFuncRegisteAfterLoad && isLoaded {
+                AbilityMonitor.shared.record(event: .blockFuncRegisteAfterLoad(funcKey, block))
+                return
+            }
+            let key = AnyHashable(funcKey)
+            if let existFunc = storage[key] {
+                AbilityMonitor.shared.record(event: .duplicateRegisteFunc(funcKey, existFunc, block))
+            }
+            AbilityMonitor.shared.record(event: .registeFunc(funcKey))
+            self.storage[key] = block
         }
-        let key = AnyHashable(funcKey)
-        if let existFunc = storage[key] {
-            AbilityMonitor.shared.record(event: .duplicateRegisteFunc(funcKey, existFunc, block))
-        }
-        AbilityMonitor.shared.record(event: .registeFunc(funcKey))
-        self.storage[key] = block
     }
     
     /// 注册可运行无入参方法
     public func register<Func: FuncKeyProtocol>(_ funcKey: Func, block: @escaping (()->Func.Return)) where Func.Input == Void {
-        if config.blockFuncRegisteAfterLoad && isLoaded {
-            AbilityMonitor.shared.record(event: .blockFuncRegisteAfterLoad(funcKey, block))
-            return
+        DispatchQueue.syncOnAbilityQueue {
+            if config.blockFuncRegisteAfterLoad && isLoaded {
+                AbilityMonitor.shared.record(event: .blockFuncRegisteAfterLoad(funcKey, block))
+                return
+            }
+            let key = AnyHashable(funcKey)
+            if let existFunc = storage[key] {
+                AbilityMonitor.shared.record(event: .duplicateRegisteFunc(funcKey, existFunc, block))
+            }
+            AbilityMonitor.shared.record(event: .registeFunc(funcKey))
+            self.storage[funcKey] = block
         }
-        let key = AnyHashable(funcKey)
-        if let existFunc = storage[key] {
-            AbilityMonitor.shared.record(event: .duplicateRegisteFunc(funcKey, existFunc, block))
-        }
-        AbilityMonitor.shared.record(event: .registeFunc(funcKey))
-        self.storage[funcKey] = block
     }
     
     /// 移除注册的对应方法
     public func removeFuncWithKey<Func: FuncKeyProtocol>(_ funcKey: Func) {
-        if config.blockFuncRegisteAfterLoad && isLoaded {
-            AbilityMonitor.shared.record(event: .blockFuncRemoveAfterLoad(funcKey))
-            return
+        DispatchQueue.syncOnAbilityQueue {
+            if config.blockFuncRegisteAfterLoad && isLoaded {
+                AbilityMonitor.shared.record(event: .blockFuncRemoveAfterLoad(funcKey))
+                return
+            }
+            let key = AnyHashable(funcKey)
+            AbilityMonitor.shared.record(event: .removeFunc(funcKey))
+            self.storage.removeValue(forKey: key)
         }
-        let key = AnyHashable(funcKey)
-        AbilityMonitor.shared.record(event: .removeFunc(funcKey))
-        self.storage.removeValue(forKey: key)
+    }
+}
+
+// MARK: - Ability Queue
+
+extension DispatchQueue {
+    static let abilityQueueDispatchSpecificKey: DispatchSpecificKey<String> = .init()
+    /// ability 队列使用的锁
+    static let abilityQueue: DispatchQueue = {
+        let queue = DispatchQueue(label: "ability.ability_queue")
+        queue.setSpecific(key: abilityQueueDispatchSpecificKey, value: queue.label)
+        return queue
+    }()
+    
+    /// 在 config 队列中执行
+    public static func syncOnAbilityQueue<T>(execute work: () throws -> T) rethrows -> T {
+        if DispatchQueue.getSpecific(key: Self.abilityQueueDispatchSpecificKey) == Self.abilityQueue.label {
+            return try work()
+        }
+        return try Self.abilityQueue.sync(execute: work)
     }
 }

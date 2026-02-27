@@ -1,4 +1,4 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -21,6 +21,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
         .package(url: "https://github.com/miejoy/auto-config.git", branch: "main"),
+        .package(url: "https://github.com/miejoy/module-monitor.git", branch: "main"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can dt;9csjskdjjkdnfeqwdbfgbn  bak zx o0 vcefine a module or a test suite.
@@ -28,7 +29,8 @@ let package = Package(
         .target(
             name: "Ability",
             dependencies: [
-                .product(name: "AutoConfig", package: "auto-config")
+                .product(name: "AutoConfig", package: "auto-config"),
+                .product(name: "ModuleMonitor", package: "module-monitor")
             ]
         ),
         .testTarget(

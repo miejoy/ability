@@ -8,6 +8,7 @@
 import XCTest
 @testable import AutoConfig
 @testable import Ability
+@testable import ModuleMonitor
 
 final class AbilityProtocolTests: XCTestCase {
     
@@ -71,7 +72,7 @@ final class AbilityProtocolTests: XCTestCase {
     
     func testAbilityDuplicateRegiste() {
         AbilityMonitor.shared.arrObservers = []
-        class Oberver: AbilityMonitorOberver {
+        final class Oberver: AbilityMonitorObserver, @unchecked Sendable {
             var duplicateRegisterGetCall: Bool = false
             func receiveAbilityEvent(_ event: AbilityEvent) {
                 if case .duplicateRegisteAbility(_, _)  = event {
@@ -96,7 +97,7 @@ final class AbilityProtocolTests: XCTestCase {
     
     func testRegisteAbilityMismatch() {
         AbilityMonitor.shared.arrObservers = []
-        class Oberver: AbilityMonitorOberver {
+        final class Oberver: AbilityMonitorObserver, @unchecked Sendable {
             var mismatchGetCall: Bool = false
             func receiveAbilityEvent(_ event: AbilityEvent) {
                 if case .registeAbilityMismatch(_)  = event {
@@ -160,7 +161,7 @@ final class AbilityProtocolTests: XCTestCase {
     }
 }
 
-class OtherNetworkAbility: NetworkAbility {
+final class OtherNetworkAbility: NetworkAbility {
     func doSomething() {}
 }
 

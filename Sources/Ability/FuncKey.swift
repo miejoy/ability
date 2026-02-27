@@ -24,7 +24,7 @@ extension DefaultFuncKeyProtocol where Input == Void {
 }
 
 /// 方法对应 key
-public struct FuncKey<Input, Return>: FuncKeyProtocol {
+public struct FuncKey<Input, Return>: FuncKeyProtocol, Sendable {
     let funcId: String
     
     public init(funcId: String) {
@@ -36,11 +36,11 @@ public struct FuncKey<Input, Return>: FuncKeyProtocol {
     }
 }
 
-public struct DefaultFuncKey<Input, Return>: DefaultFuncKeyProtocol {
+public struct DefaultFuncKey<Input, Return>: DefaultFuncKeyProtocol, Sendable {
     let funcKey: FuncKey<Input, Return>
-    let run: (_ input: Input) -> Return
+    let run: @Sendable (_ input: Input) -> Return
     
-    public init(funcId: String, defaultRun: @escaping (_ input: Input) -> Return) {
+    public init(funcId: String, defaultRun: @Sendable @escaping (_ input: Input) -> Return) {
         self.funcKey = .init(funcId: funcId)
         self.run = defaultRun
     }
