@@ -17,13 +17,13 @@ extension Ability {
     /// 通过能力名称获取能力
     @inlinable
     public static func getAbility(of name: AbilityName) -> (any AbilityProtocol)? {
-        AbilityCenter.shared.storage[name.identifier] as? (any AbilityProtocol)
+        AbilityCenter.shared[name.identifier] as? (any AbilityProtocol)
     }
     
     /// 通过默认能力获取能力
     @inlinable
     public static func getAbility<A:AbilityProtocol>(with defaultValue: @autoclosure () -> A) -> (any AbilityProtocol) {
-        AbilityCenter.shared.storage[A.abilityName.identifier] as? (any AbilityProtocol) ?? defaultValue()
+        AbilityCenter.shared[A.abilityName.identifier] as? (any AbilityProtocol) ?? defaultValue()
     }
 }
 
@@ -37,7 +37,7 @@ extension Ability {
         _ funcKey: Func,
         params: Func.Input
     ) -> Func.Return? {
-        guard let block = AbilityCenter.shared.storage[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return else {
+        guard let block = AbilityCenter.shared[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return else {
             AbilityMonitor.shared.record(event: .funcNotFoundWithKey(funcKey))
             return nil
         }
@@ -50,7 +50,7 @@ extension Ability {
         _ funcKey: Func,
         params: Func.Input
     ) where Func.Return == Void {
-        guard let block = AbilityCenter.shared.storage[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return else {
+        guard let block = AbilityCenter.shared[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return else {
             AbilityMonitor.shared.record(event: .funcNotFoundWithKey(funcKey))
             return
         }
@@ -62,7 +62,7 @@ extension Ability {
     public static func execute<Func:FuncKeyProtocol>(
         _ funcKey: Func
     ) -> Func.Return? where Func.Input == Void {
-        guard let block = AbilityCenter.shared.storage[AnyHashable(funcKey)] as? () -> Func.Return else {
+        guard let block = AbilityCenter.shared[AnyHashable(funcKey)] as? () -> Func.Return else {
             AbilityMonitor.shared.record(event: .funcNotFoundWithKey(funcKey))
             return nil
         }
@@ -74,7 +74,7 @@ extension Ability {
     public static func execute<Func:FuncKeyProtocol>(
         _ funcKey: Func
     ) where Func.Input == Void, Func.Return == Void {
-        guard let block = AbilityCenter.shared.storage[AnyHashable(funcKey)] as? () -> Func.Return else {
+        guard let block = AbilityCenter.shared[AnyHashable(funcKey)] as? () -> Func.Return else {
             AbilityMonitor.shared.record(event: .funcNotFoundWithKey(funcKey))
             return
         }
@@ -86,7 +86,7 @@ extension Ability {
         _ funcKey: Func,
         params: Func.Input
     ) -> Func.Return where Func.Return : AnyOptionalType {
-        guard let block = AbilityCenter.shared.storage[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return else {
+        guard let block = AbilityCenter.shared[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return else {
             AbilityMonitor.shared.record(event: .funcNotFoundWithKey(funcKey))
             return Func.Return.nil as! Func.Return
         }
@@ -112,7 +112,7 @@ extension Ability {
         _ funcKey: Func,
         params: Func.Input
     ) -> Func.Return {
-        let block = (AbilityCenter.shared.storage[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return) ?? funcKey.defaultRun
+        let block = (AbilityCenter.shared[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return) ?? funcKey.defaultRun
         return block(params)
     }
     
@@ -122,7 +122,7 @@ extension Ability {
         _ funcKey: Func,
         params: Func.Input
     ) where Func.Return == Void {
-        let block = (AbilityCenter.shared.storage[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return) ?? funcKey.defaultRun
+        let block = (AbilityCenter.shared[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return) ?? funcKey.defaultRun
         block(params)
     }
     
@@ -131,7 +131,7 @@ extension Ability {
     public static func execute<Func:DefaultFuncKeyProtocol>(
         _ funcKey: Func
     ) -> Func.Return? where Func.Input == Void {
-        let block = (AbilityCenter.shared.storage[AnyHashable(funcKey)] as? () -> Func.Return) ?? funcKey.defaultRun
+        let block = (AbilityCenter.shared[AnyHashable(funcKey)] as? () -> Func.Return) ?? funcKey.defaultRun
         return block()
     }
     
@@ -140,7 +140,7 @@ extension Ability {
     public static func execute<Func:DefaultFuncKeyProtocol>(
         _ funcKey: Func
     ) where Func.Input == Void, Func.Return == Void {
-        let block = (AbilityCenter.shared.storage[AnyHashable(funcKey)] as? () -> Func.Return) ?? funcKey.defaultRun
+        let block = (AbilityCenter.shared[AnyHashable(funcKey)] as? () -> Func.Return) ?? funcKey.defaultRun
         block()
     }
     
@@ -149,7 +149,7 @@ extension Ability {
         _ funcKey: Func,
         params: Func.Input
     ) -> Func.Return where Func.Return : AnyOptionalType {
-        let block = (AbilityCenter.shared.storage[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return) ?? funcKey.defaultRun
+        let block = (AbilityCenter.shared[AnyHashable(funcKey)] as? (Func.Input) -> Func.Return) ?? funcKey.defaultRun
         return block(params)
     }
 
@@ -157,7 +157,7 @@ extension Ability {
     public static func execute<Func:DefaultFuncKeyProtocol>(
         _ funcKey: Func
     ) -> Func.Return where Func.Input == Void, Func.Return : AnyOptionalType {
-        let block = (AbilityCenter.shared.storage[AnyHashable(funcKey)] as? () -> Func.Return) ?? funcKey.defaultRun
+        let block = (AbilityCenter.shared[AnyHashable(funcKey)] as? () -> Func.Return) ?? funcKey.defaultRun
         return block()
     }
 }

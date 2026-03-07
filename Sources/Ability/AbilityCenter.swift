@@ -23,7 +23,7 @@ public class AbilityCenter {
     nonisolated(unsafe) static var _shared: AbilityCenter? = nil
     
     /// 任意储存器，目前外部只提供读取
-    private(set) public var storage: [AnyHashable:Any] = [:]
+    var storage: [AnyHashable:Any] = [:]
     var config: AbilityConfig
     var usedAbilityNames: Set<AbilityName> = []
     var isLoaded: Bool = false
@@ -54,6 +54,13 @@ public class AbilityCenter {
         config.onLoadCallBack?()
         
         isLoaded = true
+    }
+    
+    
+    public subscript(_ key: AnyHashable) -> Any? {
+        DispatchQueue.syncOnAbilityQueue {
+            self.storage[key]
+        }
     }
 }
 
@@ -167,7 +174,7 @@ extension DispatchQueue {
         return queue
     }()
     
-    /// 在 config 队列中执行
+    /// 在 ability 队列中执行
     public static func syncOnAbilityQueue<T>(execute work: () throws -> T) rethrows -> T {
         if DispatchQueue.getSpecific(key: Self.abilityQueueDispatchSpecificKey) == Self.abilityQueue.label {
             return try work()
