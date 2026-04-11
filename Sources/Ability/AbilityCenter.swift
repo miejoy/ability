@@ -68,22 +68,24 @@ public class AbilityCenter {
 extension AbilityCenter {
     /// 注册能力列表
     func registerAbilities(_ abilities: [AbilityWrapper]) {
-        // 先注册
-        abilities.forEach { abilityInfo in
-            let abilityName = abilityInfo.abilityName
-            let ability = abilityInfo.ability
-            if config.needCheckAbility {
-                guard abilityName.runCheck(ability) else {
-                    AbilityMonitor.shared.record(event: .registerAbilityMismatch(ability))
-                    return
+        DispatchQueue.syncOnAbilityQueue {
+            // 先注册
+            abilities.forEach { abilityInfo in
+                let abilityName = abilityInfo.abilityName
+                let ability = abilityInfo.ability
+                if config.needCheckAbility {
+                    guard abilityName.runCheck(ability) else {
+                        AbilityMonitor.shared.record(event: .registerAbilityMismatch(ability))
+                        return
+                    }
                 }
+                if let existAbility = storage[abilityName.identifier] {
+                    AbilityMonitor.shared.record(event: .duplicateRegisterAbility(existAbility, ability))
+                }
+                AbilityMonitor.shared.record(event: .registerAbility(ability))
+                storage[abilityName.identifier] = ability
+                usedAbilityNames.insert(abilityName)
             }
-            if let existAbility = storage[abilityName.identifier] {
-                AbilityMonitor.shared.record(event: .duplicateRegisterAbility(existAbility, ability))
-            }
-            AbilityMonitor.shared.record(event: .registerAbility(ability))
-            storage[abilityName.identifier] = ability
-            usedAbilityNames.insert(abilityName)
         }
     }
     
