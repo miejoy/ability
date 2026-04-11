@@ -85,7 +85,6 @@ extension AbilityCenter {
             storage[abilityName.identifier] = ability
             usedAbilityNames.insert(abilityName)
         }
-        
     }
     
     // 调用能力加载
@@ -101,19 +100,23 @@ extension AbilityCenter {
 extension AbilityCenter {
     /// 注册方法列表
     func registerFuncs(_ funcs: [FuncWrapper]) {
-        funcs.forEach { funcInfo in
-            let key = AnyHashable(funcInfo.funcKey)
-            if let existFunc = storage[key] {
-                AbilityMonitor.shared.record(event: .duplicateRegisterFunc(funcInfo.funcKey, existFunc, funcInfo.block))
+        DispatchQueue.syncOnAbilityQueue {
+            funcs.forEach { funcInfo in
+                let key = AnyHashable(funcInfo.funcKey)
+                if let existFunc = storage[key] {
+                    AbilityMonitor.shared.record(event: .duplicateRegisterFunc(funcInfo.funcKey, existFunc, funcInfo.block))
+                }
+                AbilityMonitor.shared.record(event: .registerFunc(funcInfo.funcKey))
+                storage[key] = funcInfo.block
             }
-            AbilityMonitor.shared.record(event: .registerFunc(funcInfo.funcKey))
-            storage[key] = funcInfo.block
         }
     }
     
     func removeFuncs(_ funcs: [any FuncKeyProtocol]) {
-        funcs.forEach { funcKey in
-            removeFuncWithKey(funcKey)
+        DispatchQueue.syncOnAbilityQueue {
+            funcs.forEach { funcKey in
+                removeFuncWithKey(funcKey)
+            }
         }
     }
     
